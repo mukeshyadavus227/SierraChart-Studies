@@ -66,7 +66,7 @@
 //   Changing them in Study Settings persists permanently.
 //   Score bar tier colors follow the Level subgraph primary colors.
 //
-// INPUT LAYOUT  (115 total):
+// INPUT LAYOUT  (117 total):
 //   [0  .. 99]   Trigger 1-50   Input[2n]=Study SG ref   Input[2n+1]=Weight
 //   [100]  Level 1 Threshold
 //   [101]  Level 2 Threshold
@@ -198,15 +198,20 @@ SCSFExport scsf_OrderflowSignalV3(SCStudyInterfaceRef sc)
         sg_DbgFire.DrawZeros    = 1;
 
         // -- Trigger defaults -------------------------------------------------
+        // All slots ship EMPTY so the study deploys clean on any chart. Wire each
+        // trigger to your chart's order-flow studies via Study Settings (set the
+        // study-subgraph ref and a non-zero weight). Previously these defaults
+        // carried chart-specific study IDs from the authoring chart, which pointed
+        // at the wrong/missing studies on every other chart.
         struct s_TrigDef { int studyID; int sgIdx; int weight; };
         static const s_TrigDef td[50] = {
-            {60,  0, 1}, {84,  0, 1}, {82,  0, 1}, {59,  4, 1}, {59,  5, 1},
-            {82,  0, 1}, {58,  0, 1}, {57,  2, 1}, {56,  2, 2}, {56,  4, 2},
-            {56,  6, 1}, {55,  4, 2}, {55,  5, 2}, {28,  4, 2}, {34,  0, 1},
-            {70,  4, 2}, {70,  5, 2}, {68,  0, 1}, {71,  0, 1}, {64,  0, 1},
-            {64,  5, 1}, {53,  0, 1}, {76,  0, 2}, {73,  0, 2}, {90,  0, 2},
-            {62,  0, 1}, {79,  0, 1}, {67,  0, 1}, {52,  0, 2}, {29,  0, 1},
-            {49,  0, 1}, {19,  5, 1}, {47,  2, 1},
+            { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
+            { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
+            { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
+            { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
+            { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
+            { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
+            { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
             { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
             { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
             { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0}, { 0,  0, 0},
