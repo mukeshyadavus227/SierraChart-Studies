@@ -2,6 +2,14 @@
 
 A collection of Sierra Chart ACSIL (C++) custom studies for ES futures scalping, built around order-flow confluence gated by trend-state filters.
 
+## 👉 Where to start
+New here, or deciding what to load first? Read the **[Deployment Priority guide](docs/DEPLOYMENT_PRIORITY.md)** —
+a plain-English, best-to-worst ranking of every study, plus a rollout plan.
+Detailed playbooks (strengths, best settings, best markets/timeframes, how to
+read the signals) for the top studies live in **[`docs/playbooks/`](docs/playbooks/)**.
+
+> These are decision-support / signal studies, not hands-off auto-trading bots.
+
 ## Studies
 
 | File | Description |

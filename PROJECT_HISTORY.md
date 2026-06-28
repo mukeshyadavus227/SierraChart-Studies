@@ -147,6 +147,19 @@ The order-flow engines have **"OTF Filter" inputs** (Arrow OTF Slot 1/2 and Conf
 
 ---
 
+## Update — 2026-06-28 (user docs: deployment priority + playbooks)
+
+Added a plain-English documentation set under `docs/` (no code changes):
+- `docs/DEPLOYMENT_PRIORITY.md` — best-to-worst ranking of all 18 active studies
+  with rationale, a week-by-week rollout plan, and market/timeframe guidance.
+  Clarifies these are decision-support/signal studies, not auto-execution bots.
+- `docs/playbooks/` — per-study guides for the top 6 (OTFStateFilter,
+  FlowConviction, AbsorptionGradient, OrderflowSignalV3, DOMReaderV2,
+  InterestMap): strengths, data needs, best markets/timeframes, key settings with
+  starting values (taken from each study's actual defaults), how to read the
+  signals, and gotchas.
+- `docs/README.md` index; README links to the guide.
+
 ## Update — 2026-06-28 (slot/comment audit + OFCommon adoption)
 
 - **Persistent-slot audit**: mapped every `GetPersistent*` call across the suite. Most studies already document their slots at the definition site (e.g. `AbsorptionGradient`, `InterestMap`, `LiquidityZones`, `BigTradesTape`, `DOMReaderV2`, `FlowConviction`). Added top-of-file slot notes where a header reader couldn't see them: `OrderflowSignalV3` (Int 1/2/3), `ReconTape` (Int 0), `ReconTapeV2` (Int 0). Note: ACSIL's Int / Float / Double / Pointer persistent slots are separate namespaces, so e.g. `InterestMap`'s pointer-1 and int-0/1/2 do not collide.
