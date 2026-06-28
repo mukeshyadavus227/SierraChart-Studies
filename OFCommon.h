@@ -27,6 +27,40 @@
 //   2     alert watermark          newest alerted signal bar index
 //   3     alert watermark          newest alerted confluence bar index
 //   4-6   settings fingerprint     structural input change detection
+//
+// -----------------------------------------------------------------------------
+// WORKED EXAMPLE — adopting the intrabar guard in OrderflowSignalV3.cpp
+//
+//   BEFORE (hand-rolled, ~7 lines):
+//     int& lastKnownBars = sc.GetPersistentInt(1);
+//     const bool isFullRecalc = (sc.UpdateStartIndex == 0);
+//     const bool isNewBar     = (totalBars > lastKnownBars);
+//     if (!isFullRecalc && !isNewBar)
+//         return;
+//     lastKnownBars = totalBars;
+//
+//   AFTER:
+//     const bool isFullRecalc = OF::IsFullRecalc(sc);  // still used by the alert block
+//     if (!OF::ShouldProcessBarClose(sc))
+//         return;
+//
+// WORKED EXAMPLE — adopting the watermark alert (signal alert in V3.cpp)
+//
+//   The signal message embeds a conviction level, so use the primitive and
+//   format the message yourself; the convenience wrapper ScanAndAlert covers
+//   the simpler confluence-onset case.
+//
+//     const int sigBar = OF::NewestNewSignalBar(sc, OF::SLOT_ALERT_SIGNAL,
+//         [&](int b){ return sg_Level1[b]!=0.0f || sg_Level2[b]!=0.0f || sg_Level3[b]!=0.0f; });
+//     if (sigSound > 0 && sigBar >= 0) {
+//         const int level = (sg_Level3[sigBar]!=0.0f) ? 3 : (sg_Level2[sigBar]!=0.0f ? 2 : 1);
+//         SCString msg; msg.Format("Orderflow Signal L%d (%d bar(s) back)", level, (sc.ArraySize-1) - sigBar);
+//         sc.SetAlert(sigSound, sc.ArraySize-1, msg);
+//     }
+//
+//     OF::ScanAndAlert(sc, OF::SLOT_ALERT_CONFLUENCE, confSound,
+//         [&](int b){ return sg_Confluence[b] > 0.5f && (b==0 || sg_Confluence[b-1] < 0.5f); },
+//         "Orderflow Confluence Zone");
 // =============================================================================
 #pragma once
 

@@ -12,7 +12,7 @@ Custom Sierra Chart studies written in C++ using the ACSIL (Advanced Custom Stud
 | BreadthCompositeOscillator.cpp | Breadth oscillator composite |
 | DeltaReversalTrigger.cpp | Delta-based reversal detection |
 | DeltaVelocityProfile.cpp | Delta velocity + acceleration (dual-source) |
-| DOMReader.cpp / DOMReaderV2.cpp | DOM imbalance reader |
+| DOMReaderV2.cpp | DOM imbalance reader (canonical; V1 oscillator preserved on SG1, V1 moved to archive/) |
 | FlowConviction.cpp | Order flow conviction composite (EWMA-normalized) |
 | InterestMap.cpp | Open interest mapping |
 | LiquidityZones.cpp | Supply/demand zone detection |
@@ -24,7 +24,7 @@ Custom Sierra Chart studies written in C++ using the ACSIL (Advanced Custom Stud
 | TapeReader.cpp | Raw tape reading |
 | TrappedTraders.cpp | Trapped trader detection |
 | OFCommon.h | Shared helpers for the common ACSIL patterns (opt-in; see below) |
-| archive/ | Superseded study versions, not maintained (e.g. OrderflowSignalV2.cpp) |
+| archive/ | Superseded study versions, not maintained (OrderflowSignalV2.cpp, DOMReader.cpp) |
 | PROJECT_HISTORY.md | Changelog — update this when making significant changes |
 
 ---

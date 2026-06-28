@@ -13,11 +13,10 @@ A collection of Sierra Chart ACSIL (C++) custom studies for ES futures scalping,
 | `MTFCloseFilter.pine` | TradingView Pine v5 port of MTFCloseFilter |
 | `BreadthCompositeOscillator.cpp` | NYSE $VOLD + $ADD composite oscillator with dual Z-score normalization — macro bias filter |
 | `TapeReader.cpp` | Tape reading study |
-| `ReconTape.cpp` | Reconnaissance tape study |
-| `ReconTapeV2.cpp` | Updated ReconTape |
+| `ReconTape.cpp` | Reconstructed tape: bubbles + Zones-of-Interest rectangles, Z-score or percentile significance |
+| `ReconTapeV2.cpp` | Multi-tier reconstructed tape (distinct variant — 3 tiers, session-scoped baseline; not a superset of V1) |
 | `BigTradesTape.cpp` | Highlights large trades on the tape |
-| `DOMReader.cpp` | DOM (Depth of Market) reader |
-| `DOMReaderV2.cpp` | Updated DOMReader |
+| `DOMReaderV2.cpp` | **Canonical** DOM pull/stack reader: V1 oscillator preserved byte-for-byte on SG1, plus atoms, conviction butterfly, and bar-close triggers. Supersedes V1 (archived). |
 | `DeltaVelocityProfile.cpp` | Delta velocity profiling |
 | `DeltaReversalTrigger.cpp` | Delta reversal trigger detection |
 | `AbsorptionGradient.cpp` | Absorption gradient visualization |

@@ -151,9 +151,13 @@ The order-flow engines have **"OTF Filter" inputs** (Arrow OTF Slot 1/2 and Conf
 
 Light-touch maintenance pass — no study logic changed.
 
-- **Archived superseded version**: `OrderflowSignalV2.cpp` moved to `archive/`. V3 is a strict superset (rising-edge detection + V3.2 watermark alerts) and is the canonical build; `archive/README.md` records why. The other version pairs (`ReconTape`/`ReconTapeV2`, `DOMReader`/`DOMReaderV2`) were left in place — their V1s may be intentionally-kept simpler variants, so retiring them is a separate decision.
-- **Shared header `OFCommon.h`**: extracts the four repo-wide boilerplate patterns (full-recalc detection, intrabar guard, settings fingerprint, post-loop watermark alerting) into one tested implementation, mirroring what was copy-pasted across studies. Opt-in — not yet wired into existing studies; adopt per study with an F5 compile since ACSIL only builds inside Sierra Chart.
-- **Doc sweep**: README + CLAUDE.md study tables updated (V3 canonical, V2 archived, `OFCommon.h` and `archive/` listed); fixed a truncated `BreadthCompositeO...` entry in CLAUDE.md.
+- **Archived superseded versions** (after verifying superset relationships in source, not summaries):
+  - `OrderflowSignalV2.cpp` → `archive/`. V3 is a strict superset (rising-edge detection + V3.2 watermark alerts) and is the canonical build.
+  - `DOMReader.cpp` → `archive/`. `DOMReaderV2` preserves V1's Pull/Stack oscillator byte-for-byte on SG1 and layers analytics on top, so nothing is lost.
+  - **Kept** `ReconTape.cpp` (V1): `ReconTapeV2` is a distinct multi-tier variant, not a superset — V1 uniquely keeps Z-score significance, Zones-of-Interest rectangles, and reaction measurement. Both are maintained (same rationale as keeping `OrderflowConfluence`).
+  - `archive/README.md` records each decision.
+- **Shared header `OFCommon.h`**: extracts the four repo-wide boilerplate patterns (full-recalc detection, intrabar guard, settings fingerprint, post-loop watermark alerting) into one tested implementation, mirroring what was copy-pasted across studies. Includes worked before/after adoption examples for OrderflowSignalV3. Opt-in — not yet wired into existing studies; adopt per study with an F5 compile since ACSIL only builds inside Sierra Chart (shipping unverifiable edits into live studies was intentionally avoided).
+- **Doc sweep**: README + CLAUDE.md study tables updated (V3 + DOMReaderV2 canonical, V2/DOMReader archived, ReconTape pair clarified as distinct variants, `OFCommon.h` and `archive/` listed); fixed a truncated `BreadthCompositeO...` entry in CLAUDE.md.
 
 ## Update — 2026-06-27
 
