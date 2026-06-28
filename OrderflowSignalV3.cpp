@@ -91,6 +91,11 @@
 //   [1]  (unused since V3.2 — was per-bar signal alert flag)
 //   [2]  (unused since V3.2 — was per-bar confluence alert flag)
 //
+// PERSISTENT SLOTS (Int):
+//   1  lastKnownBars     new-bar / bar-close detection (OF::ShouldProcessBarClose)
+//   2  alert watermark   newest alerted signal bar     (OF::NewestNewSignalBar)
+//   3  alert watermark   newest alerted confluence bar (OF::ScanAndAlert)
+//
 // V3.2 ALERT FIX:
 //   Arrows print retroactively (HTF trigger backfill puts the rising edge
 //   2-3 bars back), so per-bar SetAlert calls used stale bar indexes and SC
@@ -102,6 +107,7 @@
 // =============================================================================
 
 #include "sierrachart.h"
+#include "OFCommon.h"
 
 SCDLLName("OrderflowSignalV3")
 
@@ -401,15 +407,10 @@ SCSFExport scsf_OrderflowSignalV3(SCStudyInterfaceRef sc)
     // =========================================================================
     const int lastBar = totalBars - 1;
 
-    int& lastKnownBars = sc.GetPersistentInt(1);
-
-    const bool isFullRecalc = (sc.UpdateStartIndex == 0);
-    const bool isNewBar     = (totalBars > lastKnownBars);
-
-    if (!isFullRecalc && !isNewBar)
+    // Intrabar guard via OFCommon — process only on bar close or full recalc
+    // (advances the slot-1 lastKnownBars watermark internally).
+    if (!OF::ShouldProcessBarClose(sc))
         return;  // intrabar tick — nothing to do
-
-    lastKnownBars = totalBars;
 
     const int windowStart = 0;  // always full pass
 
@@ -615,62 +616,28 @@ SCSFExport scsf_OrderflowSignalV3(SCStudyInterfaceRef sc)
     //   bar and no alert is raised — prevents an alert storm on chart load
     //   (SC would suppress those anyway).
     // =========================================================================
-    int& lastAlertedSigBar  = sc.GetPersistentInt(2);
-    int& lastAlertedConfBar = sc.GetPersistentInt(3);
+    // Watermark logic (full-recalc fast-forward, dedup by bar index, 10-bar scan
+    // window) lives in OFCommon.h — see OF::NewestNewSignalBar / OF::ScanAndAlert.
 
-    if (isFullRecalc || sc.IsFullRecalculation || lastAlertedSigBar == 0)
-    {
-        // Initialize / reset watermarks; never alert on historical data.
-        lastAlertedSigBar  = lastBar;
-        lastAlertedConfBar = lastBar;
-        return;
-    }
-
-    const int ALERT_SCAN_BARS = 10;  // how far back a late-printing arrow is still alert-worthy
-    const int scanFloor = (totalBars - ALERT_SCAN_BARS > 0) ? (totalBars - ALERT_SCAN_BARS) : 0;
-
-    // ---- Signal alert: newest un-alerted arrow in the scan window ----------
+    // ---- Signal alert: newest un-alerted arrow; message carries the tier ----
     if (sigSound > 0)
     {
-        const int start = (lastAlertedSigBar + 1 > scanFloor) ? (lastAlertedSigBar + 1) : scanFloor;
-        for (int b = lastBar; b >= start; --b)   // newest first
+        const int sigBar = OF::NewestNewSignalBar(sc, OF::SLOT_ALERT_SIGNAL,
+            [&](int b){ return sg_Level1[b] != 0.0f || sg_Level2[b] != 0.0f || sg_Level3[b] != 0.0f; });
+        if (sigBar >= 0)
         {
-            int level = 0;
-            if      (sg_Level3[b] != 0.0f) level = 3;
-            else if (sg_Level2[b] != 0.0f) level = 2;
-            else if (sg_Level1[b] != 0.0f) level = 1;
-
-            if (level > 0)
-            {
-                SCString msg;
-                msg.Format("Orderflow Signal L%d (%d bar(s) back)", level, lastBar - b);
-                sc.SetAlert(sigSound, lastBar, msg);
-                lastAlertedSigBar = b;
-                break;  // one alert per update cycle
-            }
+            const int level = (sg_Level3[sigBar] != 0.0f) ? 3
+                            : (sg_Level2[sigBar] != 0.0f) ? 2 : 1;
+            SCString msg;
+            msg.Format("Orderflow Signal L%d (%d bar(s) back)", level, lastBar - sigBar);
+            sc.SetAlert(sigSound, lastBar, msg);
         }
     }
     else
-        lastAlertedSigBar = lastBar;
+        sc.GetPersistentInt(OF::SLOT_ALERT_SIGNAL) = lastBar;
 
     // ---- Confluence alert: newest un-alerted zone ONSET ---------------------
-    if (confSound > 0)
-    {
-        const int start = (lastAlertedConfBar + 1 > scanFloor) ? (lastAlertedConfBar + 1) : scanFloor;
-        for (int b = lastBar; b >= start; --b)
-        {
-            const bool onset = (sg_Confluence[b] > 0.5f) &&
-                               (b == 0 || sg_Confluence[b - 1] < 0.5f);
-            if (onset)
-            {
-                SCString msg;
-                msg.Format("Orderflow Confluence Zone (%d bar(s) back)", lastBar - b);
-                sc.SetAlert(confSound, lastBar, msg);
-                lastAlertedConfBar = b;
-                break;
-            }
-        }
-    }
-    else
-        lastAlertedConfBar = lastBar;
+    OF::ScanAndAlert(sc, OF::SLOT_ALERT_CONFLUENCE, confSound,
+        [&](int b){ return sg_Confluence[b] > 0.5f && (b == 0 || sg_Confluence[b - 1] < 0.5f); },
+        "Orderflow Confluence Zone");
 }

@@ -55,7 +55,8 @@
 //   - Custom-string inputs read with .GetIndex().
 //   - Data via sc.VolumeAtPriceForBars with sc.MaintainVolumeAtPriceData = 1.
 //   - Labels via sc.UseTool DRAWING_TEXT, incremental per-bar counts tracked.
-//   - Scale SCALE_SAMEASREGION; state in Subgraph extra arrays + persistent int.
+//   - Scale SCALE_SAMEASREGION; state in Subgraph extra arrays + persistent int
+//     (Int slot 0 — prevFinal, On Bar Close timing guard).
 // =============================================================================
 
 #include "sierrachart.h"

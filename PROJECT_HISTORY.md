@@ -147,6 +147,12 @@ The order-flow engines have **"OTF Filter" inputs** (Arrow OTF Slot 1/2 and Conf
 
 ---
 
+## Update — 2026-06-28 (slot/comment audit + OFCommon adoption)
+
+- **Persistent-slot audit**: mapped every `GetPersistent*` call across the suite. Most studies already document their slots at the definition site (e.g. `AbsorptionGradient`, `InterestMap`, `LiquidityZones`, `BigTradesTape`, `DOMReaderV2`, `FlowConviction`). Added top-of-file slot notes where a header reader couldn't see them: `OrderflowSignalV3` (Int 1/2/3), `ReconTape` (Int 0), `ReconTapeV2` (Int 0). Note: ACSIL's Int / Float / Double / Pointer persistent slots are separate namespaces, so e.g. `InterestMap`'s pointer-1 and int-0/1/2 do not collide.
+- **Comment audit**: fixed the one genuine stale comment — `ReconTape` header SG listing omitted the color-bar (`2*MAX`) and divergence (`2*MAX+1`) subgraphs and mislabelled the cache (actually `2*MAX+2`). Two agent-flagged "issues" (DeltaReversalTrigger SG4 text, InterestMap VAP API) were verified against source and were false positives — no change.
+- **OFCommon.h adoption (reference integration)**: `OrderflowSignalV3` now uses `OF::ShouldProcessBarClose` for the intrabar guard and `OF::NewestNewSignalBar` / `OF::ScanAndAlert` for the post-loop watermark alerts. Behaviour-preserving by construction (full-recalc fast-forward, bar-index dedup, 10-bar scan window all map 1:1). **Requires an F5 compile in Sierra Chart to confirm** — ACSIL does not build outside SC.
+
 ## Update — 2026-06-28 (housekeeping refactor)
 
 Light-touch maintenance pass — no study logic changed.
