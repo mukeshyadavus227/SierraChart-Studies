@@ -35,7 +35,8 @@ Custom Sierra Chart studies written in C++ using the ACSIL (Advanced Custom Stud
 > (`OF::ShouldProcessBarClose`, `OF::SettingsChanged`, `OF::ScanAndAlert`,
 > `OF::NewestNewSignalBar`). The header is opt-in — adopt it one study at a time
 > and recompile that study (F5) to confirm. New studies should prefer it over
-> re-deriving these patterns.
+> re-deriving these patterns. **Reference integration:** `OrderflowSignalV3.cpp`
+> (intrabar guard + watermark alerts) — pending an F5 compile to confirm.
 
 ### Study function signature
 ```cpp

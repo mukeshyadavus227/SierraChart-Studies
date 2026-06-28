@@ -10,7 +10,11 @@
 //
 //   SG 0..MAX-1        Ask / Buy bubble slots  (red)
 //   SG MAX..2*MAX-1    Bid / Sell bubble slots (blue)
-//   SG 2*MAX           Hidden cache: baseline prefix sums + draw counts
+//   SG 2*MAX           Color bar  (price-bar coloring)
+//   SG 2*MAX+1         Divergence diamonds
+//   SG 2*MAX+2         Hidden cache: baseline prefix sums + draw counts
+//
+//   Persistent slots:  Int 0 — prevFinal (On Bar Close timing guard)
 //
 // -----------------------------------------------------------------------------
 // SIGNIFICANCE FILTER (per price level, vs a trailing baseline)
