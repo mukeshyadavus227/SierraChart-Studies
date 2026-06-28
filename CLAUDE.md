@@ -9,7 +9,7 @@ Custom Sierra Chart studies written in C++ using the ACSIL (Advanced Custom Stud
 | AbsorptionGradient.cpp | Detects absorption at key levels |
 | AVWAPRotation.cpp | Anchored VWAP rotation signals |
 | BigTradesTape.cpp | Large trade detection with CSV persistence |
-| BreadthCompositeO... | Breadth oscillator composite |
+| BreadthCompositeOscillator.cpp | Breadth oscillator composite |
 | DeltaReversalTrigger.cpp | Delta-based reversal detection |
 | DeltaVelocityProfile.cpp | Delta velocity + acceleration (dual-source) |
 | DOMReader.cpp / DOMReaderV2.cpp | DOM imbalance reader |
@@ -18,16 +18,24 @@ Custom Sierra Chart studies written in C++ using the ACSIL (Advanced Custom Stud
 | LiquidityZones.cpp | Supply/demand zone detection |
 | MTFCloseFilter.cpp | Multi-timeframe close filter |
 | OrderflowConfluence.cpp | Confluence of orderflow signals |
-| OrderflowSignalV2.cpp / V3.cpp | Main orderflow signal with HTF triggers |
+| OrderflowSignalV3.cpp | Main orderflow signal with HTF triggers (canonical; V2 moved to archive/) |
 | OTFStateFilter.cpp | Orderflow trend state filter |
 | ReconTape.cpp / ReconTapeV2.cpp | Tape reconstruction / T&S analysis |
 | TapeReader.cpp | Raw tape reading |
 | TrappedTraders.cpp | Trapped trader detection |
+| OFCommon.h | Shared helpers for the common ACSIL patterns (opt-in; see below) |
+| archive/ | Superseded study versions, not maintained (e.g. OrderflowSignalV2.cpp) |
 | PROJECT_HISTORY.md | Changelog — update this when making significant changes |
 
 ---
 
 ## ACSIL Core Patterns
+
+> The patterns below are also packaged as reusable helpers in `OFCommon.h`
+> (`OF::ShouldProcessBarClose`, `OF::SettingsChanged`, `OF::ScanAndAlert`,
+> `OF::NewestNewSignalBar`). The header is opt-in — adopt it one study at a time
+> and recompile that study (F5) to confirm. New studies should prefer it over
+> re-deriving these patterns.
 
 ### Study function signature
 ```cpp

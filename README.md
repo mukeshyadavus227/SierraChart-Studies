@@ -7,8 +7,7 @@ A collection of Sierra Chart ACSIL (C++) custom studies for ES futures scalping,
 | File | Description |
 |---|---|
 | `OrderflowConfluence.cpp` | 25 bull + 25 bear order-flow triggers with shared or independent scoring modes |
-| `OrderflowSignalV2.cpp` | Single-direction engine with 50 weighted triggers and 3 intensity levels (`AutoLoop = 0`) |
-| `OrderflowSignalV3.cpp` | Continued evolution of V2 |
+| `OrderflowSignalV3.cpp` | **Canonical** single-direction engine: 50 weighted triggers, 3 intensity levels (`AutoLoop = 0`), rising-edge trigger detection, post-loop watermark alerts. Supersedes V2 (archived). |
 | `OTFStateFilter.cpp` | Trend state machine (Higher-Lows / Lower-Highs) producing a +1 / 0 / −1 state subgraph |
 | `MTFCloseFilter.cpp` | Multi-timeframe close-breakout state across six charts with a colored status bar |
 | `MTFCloseFilter.pine` | TradingView Pine v5 port of MTFCloseFilter |
@@ -27,3 +26,6 @@ A collection of Sierra Chart ACSIL (C++) custom studies for ES futures scalping,
 | `LiquidityZones.cpp` | Liquidity zone detection |
 | `TrappedTraders.cpp` | Trapped trader detection |
 | `AVWAPRotation.cpp` | Anchored VWAP rotation study |
+| `OFCommon.h` | Shared helpers for the common ACSIL patterns (intrabar guard, settings fingerprint, watermark alerts). Opt-in; adopt per study. |
+
+Superseded versions live in [`archive/`](archive/) and are not maintained.
