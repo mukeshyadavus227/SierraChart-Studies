@@ -147,4 +147,11 @@ The order-flow engines have **"OTF Filter" inputs** (Arrow OTF Slot 1/2 and Conf
 
 ---
 
+## Update — 2026-06-27
+
+- **OrderflowSignalV3.cpp**: cleared the hardcoded default trigger map. The 33 chart-specific study IDs (`60/84/82/59/…`) that previously shipped in `SetDefaults` pointed at the authoring chart's studies and mis-scored on every other chart. All 50 trigger slots now ship empty (`{0,0,0}`) so the study deploys clean — wire each trigger to your own order-flow studies via Study Settings (study-subgraph ref + non-zero weight). Also fixed the stale header input count ("115 total" → "117 total"; the study has inputs `[0..116]`, including `[115]` Sub-panel Mode and `[116]` Level 1/2/3 Window).
+- Note: V2 still carries the old chart-specific default trigger map (lines ~168–181). V3 is the recommended build (rising-edge fix + post-loop watermark alerts).
+
+---
+
 *This note is a snapshot of file state as of 2026-05-20. Treat the code as authoritative — if anything here disagrees with the source, the source wins.*
