@@ -147,6 +147,18 @@ The order-flow engines have **"OTF Filter" inputs** (Arrow OTF Slot 1/2 and Conf
 
 ---
 
+## Update — 2026-06-28 (housekeeping refactor)
+
+Light-touch maintenance pass — no study logic changed.
+
+- **Archived superseded versions** (after verifying superset relationships in source, not summaries):
+  - `OrderflowSignalV2.cpp` → `archive/`. V3 is a strict superset (rising-edge detection + V3.2 watermark alerts) and is the canonical build.
+  - `DOMReader.cpp` → `archive/`. `DOMReaderV2` preserves V1's Pull/Stack oscillator byte-for-byte on SG1 and layers analytics on top, so nothing is lost.
+  - **Kept** `ReconTape.cpp` (V1): `ReconTapeV2` is a distinct multi-tier variant, not a superset — V1 uniquely keeps Z-score significance, Zones-of-Interest rectangles, and reaction measurement. Both are maintained (same rationale as keeping `OrderflowConfluence`).
+  - `archive/README.md` records each decision.
+- **Shared header `OFCommon.h`**: extracts the four repo-wide boilerplate patterns (full-recalc detection, intrabar guard, settings fingerprint, post-loop watermark alerting) into one tested implementation, mirroring what was copy-pasted across studies. Includes worked before/after adoption examples for OrderflowSignalV3. Opt-in — not yet wired into existing studies; adopt per study with an F5 compile since ACSIL only builds inside Sierra Chart (shipping unverifiable edits into live studies was intentionally avoided).
+- **Doc sweep**: README + CLAUDE.md study tables updated (V3 + DOMReaderV2 canonical, V2/DOMReader archived, ReconTape pair clarified as distinct variants, `OFCommon.h` and `archive/` listed); fixed a truncated `BreadthCompositeO...` entry in CLAUDE.md.
+
 ## Update — 2026-06-27
 
 - **OrderflowSignalV3.cpp**: cleared the hardcoded default trigger map. The 33 chart-specific study IDs (`60/84/82/59/…`) that previously shipped in `SetDefaults` pointed at the authoring chart's studies and mis-scored on every other chart. All 50 trigger slots now ship empty (`{0,0,0}`) so the study deploys clean — wire each trigger to your own order-flow studies via Study Settings (study-subgraph ref + non-zero weight). Also fixed the stale header input count ("115 total" → "117 total"; the study has inputs `[0..116]`, including `[115]` Sub-panel Mode and `[116]` Level 1/2/3 Window).
